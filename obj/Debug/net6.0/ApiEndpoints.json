@@ -1,0 +1,36 @@
+[
+  {
+    "ContainingType": "API.Startup\u002B\u003C\u003Ec",
+    "Method": "\u003CConfigure\u003Eb__8_2",
+    "RelativePath": "",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "API.Controllers.CadPessoa.HomeController",
+    "Method": "Create",
+    "RelativePath": "api/cad-pessoa",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "viewModel",
+        "Type": "API.ViewModels.CadPessoaViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
