@@ -1,8 +1,12 @@
-﻿namespace API.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace API.Models
 {
     public class CadPessoa
     {
-        public string? Nome { get; private set; }
+        [BsonId]
+        public Guid Id { get; set; }
+        public string Nome { get; private set; }
         public int Idade { get; private set; }
         public float Peso { get; private set; }
         public float Altura { get; private set; }
@@ -23,6 +27,11 @@
         public void AlterarPeso(float peso)
         {
             Peso = peso;
+        }
+
+        public void AlterarIdade(int  idade)
+        {
+            Idade = idade;
         }
 
         public void AddProfissao(CProfissao profissao)

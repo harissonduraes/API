@@ -38,3 +38,4 @@ C:\Users\harisson.duraes\source\repos\API\API\bin\Debug\net6.0\runtimes\osx\nati
 C:\Users\harisson.duraes\source\repos\API\API\bin\Debug\net6.0\runtimes\win\native\mongocrypt.dll
 C:\Users\harisson.duraes\source\repos\API\API\obj\Debug\net6.0\API.csproj.AssemblyReference.cache
 C:\Users\harisson.duraes\source\repos\API\API\obj\Debug\net6.0\API.csproj.Up2Date
+C:\Users\harisson.duraes\source\repos\API\API\obj\Debug\net6.0\API.sourcelink.json

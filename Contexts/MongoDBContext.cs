@@ -7,16 +7,16 @@ namespace API.Contexts
         public MongoDBContext()
         {
             var connection = "mongodb://localhost:27017";
-            MongoClient client = new MongoClient(connection);
+            MongoClient client = new (connection);
 
             _database = client.GetDatabase("API");
         }
-
-        private IMongoDatabase _database;
 
         public IMongoCollection<TModel> GetCollection<TModel>(string name)
         {
             return _database.GetCollection<TModel>(name);
         }
+
+        private IMongoDatabase _database;
     }
 }

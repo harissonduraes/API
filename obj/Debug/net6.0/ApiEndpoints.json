@@ -32,5 +32,53 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.CadPessoa.HomeController",
+    "Method": "UpdateCadPessoaAsync",
+    "RelativePath": "api/cad-pessoa",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "viewModel",
+        "Type": "API.ViewModels.CadPessoaViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.CadPessoa.HomeController",
+    "Method": "DeleteCadPessoaAsync",
+    "RelativePath": "api/cad-pessoa/delete/{nome}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nome",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.CadPessoa.HomeController",
+    "Method": "GetCadPessoaAsync",
+    "RelativePath": "api/cad-pessoa/pesquisa",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "viewModel",
+        "Type": "API.ViewModels.PesquisaPessoaViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
