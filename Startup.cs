@@ -1,4 +1,6 @@
-﻿namespace API
+﻿using API.Configurations;
+
+namespace API
 {
     public class Startup
     {
@@ -15,6 +17,7 @@
         {
             services.AddMvc();
             services.AddControllers();
+            services.AddDependencyInjection();
         }
 
         public void Configure(IApplicationBuilder app)

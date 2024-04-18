@@ -10,9 +10,9 @@
         public List<CProfissao> Profissoes { get; set; } = new List<CProfissao>();
         public class CProfissao
         {
-            public string EmpresaNome { get; set; }
-            public string CargoNome { get; set; }
-            public string EmpresaCnpj { get; set; }
+            public string? EmpresaNome { get; set; }
+            public string? CargoNome { get; set; }
+            public string? EmpresaCnpj { get; set; }
         }
     }
 }

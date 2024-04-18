@@ -13,7 +13,7 @@ namespace API.Models
 
         public List<CProfissao> Profissoes { get; private set; } = new List<CProfissao>();
 
-        public CadPessoa(string? nome, int idade)
+        public CadPessoa(string nome, int idade)
         {
             Nome = nome;
             Idade = idade;
@@ -41,19 +41,16 @@ namespace API.Models
         #region Classes
         public class CProfissao
         {
+            public string EmpresaNome { get; private set; }
+            public string CargoNome { get; private set; }
+            public string EmpresaCnpj { get; private set; }
             public CProfissao(string empresaNome, string cargoNome, string empresaCnpj)
             {
                 EmpresaNome = empresaNome;
                 CargoNome = cargoNome;
                 EmpresaCnpj = empresaCnpj;
             }
-
-            public string EmpresaNome { get; private set; }
-            public string CargoNome { get; private set; }
-            public string EmpresaCnpj { get; private set; }
         }
         #endregion
     }
-
-
 }
