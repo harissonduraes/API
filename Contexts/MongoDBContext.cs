@@ -1,65 +1,62 @@
-﻿using MongoDB.Driver;
+﻿using API.Models;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
 namespace API.Contexts
 {
-    public class MongoDBContext : IMongoDBContext
+    public abstract class MongoDBContext<TModel> : IMongoDBContext<TModel>
+        where TModel : BaseModel
     {
         public MongoDBContext()
         {
             var connection = "mongodb://localhost:27017";
             MongoClient client = new (connection);
-
             _database = client.GetDatabase("API");
         }
 
-        private IMongoDatabase _database;
-        public IMongoCollection<TModel> GetCollection<TModel>(string name)
+        private readonly IMongoDatabase _database;
+
+        private IMongoCollection<TModel> Collection
         {
-            return _database.GetCollection<TModel>(name);
+            get
+            {
+                return _database.GetCollection<TModel>(typeof(TModel).Name);
+            }
+            
         }
 
-        public async Task<bool> AnyAsync(string nome, CancellationToken cancellationToken)
+        protected IMongoQueryable<TModel> Query
         {
-            return await GetCollection<Models.CadPessoa>("CadPessoa")
-                .AsQueryable()
-                .Where(w => w.Nome == nome)
-                .AnyAsync(cancellationToken);
+            get
+            {
+                return Collection.AsQueryable();
+            }
         }
 
-        public async Task<List<Models.CadPessoa>> GetPesquisaAsync(string nome, CancellationToken cancellationToken)
+        public async Task<TModel> GetAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await GetCollection<Models.CadPessoa>("CadPessoa")
-                .AsQueryable()
-                .Where(w =>w.Nome == nome)
-                .ToListAsync(cancellationToken);
-        }
-
-        #region CRUD
-        public async Task InsertAsync(Models.CadPessoa cadPessoa, CancellationToken cancellationToken)
-        {
-            await GetCollection<Models.CadPessoa>("CadPessoa")
-                .InsertOneAsync(cadPessoa, cancellationToken : cancellationToken);
-        }
-
-        public async Task<Models.CadPessoa> GetAsync(string nome, CancellationToken cancellationToken)
-        {
-            return await GetCollection<Models.CadPessoa>("CadPessoa")
-                .AsQueryable()
-                .Where(w => w.Nome == nome)
+            return await Query
+                .Where(w =>w.Id == id)
                 .SingleOrDefaultAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(Models.CadPessoa cadPessoa, CancellationToken cancellationToken)
+        #region CRUD
+        public async Task InsertAsync(TModel model, CancellationToken cancellationToken)
         {
-            await GetCollection<Models.CadPessoa>("CadPessoa")
-                .ReplaceOneAsync(w => w.Nome ==  cadPessoa.Nome, cadPessoa, cancellationToken: cancellationToken);
+            await Collection
+                .InsertOneAsync(model, cancellationToken : cancellationToken);
         }
 
-        public async Task DeleteAsync(string nome, CancellationToken cancellationToken)
+        public async Task UpdateAsync(TModel model, CancellationToken cancellationToken)
         {
-            await GetCollection<Models.CadPessoa>("CadPessoa")
-                .DeleteOneAsync(w => w.Nome == nome, cancellationToken);
+            await Collection
+                .ReplaceOneAsync(w => w.Id ==  model.Id, model, cancellationToken: cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            await Collection
+                .DeleteOneAsync(w => w.Id == id, cancellationToken);
         }
         #endregion
     }

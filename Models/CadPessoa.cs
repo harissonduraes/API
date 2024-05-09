@@ -1,18 +1,15 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace API.Models
+﻿namespace API.Models
 {
-    public class CadPessoa
+    public class CadPessoa : BaseModel
     {
-        [BsonId]
-        public Guid Id { get; set; }
+        #region Campos
         public string Nome { get; private set; }
         public int Idade { get; private set; }
         public float Peso { get; private set; }
         public float Altura { get; private set; }
-
         public List<CProfissao> Profissoes { get; private set; } = new List<CProfissao>();
-
+        #endregion
+        #region Métodos públicos
         public CadPessoa(string nome, int idade)
         {
             Nome = nome;
@@ -29,7 +26,7 @@ namespace API.Models
             Peso = peso;
         }
 
-        public void AlterarIdade(int  idade)
+        public void AlterarIdade(int idade)
         {
             Idade = idade;
         }
@@ -38,6 +35,7 @@ namespace API.Models
         {
             Profissoes.Add(profissao);
         }
+        #endregion
         #region Classes
         public class CProfissao
         {

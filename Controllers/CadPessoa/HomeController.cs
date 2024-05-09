@@ -1,4 +1,5 @@
 ﻿using API.Contexts;
+using API.Repositories.Interfaces;
 using API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -9,125 +10,73 @@ namespace API.Controllers.CadPessoa
     [ApiController, Route("api/cad-pessoa")]
     public class HomeController : ControllerBase
     {
-        public HomeController(IMongoDBContext context)
+        public HomeController(ICadPessoaRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        private readonly IMongoDBContext _context;
-        
-        [HttpPost]
-        //public IActionResult Create(CadPessoaViewModel viewModel)
-        public async Task<IActionResult> Create(CadPessoaViewModel viewModel, CancellationToken cancellationToken)
+        private readonly ICadPessoaRepository _repository;
+
+        [HttpPost, Route("search/{value}")]
+        public async Task<IActionResult> SearchAsync(string value, CancellationToken cancellationToken) =>
+            Ok(await _repository.GetBySearchAsync(value, cancellationToken));
+
+        [HttpPost, Route("create")]
+        public async Task<IActionResult> InsertAsync(CadPessoaViewModel viewModel, CancellationToken cancellationToken)
         {
-            var cadPessoa = new Models.CadPessoa(viewModel.Nome, viewModel.Idade);
+            var cadPessoa = new Models.CadPessoa(nome: viewModel.Nome,
+                idade: viewModel.Idade);
+
             cadPessoa.AlterarPeso(viewModel.Peso);
             cadPessoa.AlterarAltura(viewModel.Altura);
-            cadPessoa.AlterarIdade(viewModel.Idade);
 
-            //loop mais completo 
-            /*foreach(var profissao in viewModel.Profissoes)
-            {
-                var cadPessoaProfissao = new Models.CadPessoa.CProfissao(
-                    empresaNome: profissao.EmpresaNome,
-                    cargoNome: profissao.CargoNome,
-                    empresaCnpj: profissao.EmpresaCnpj);
-            }*/
-
-            //loop menos completo e mais performático, sem continue ou break
-            viewModel.Profissoes.ForEach(profissao =>
-            {
-                cadPessoa.AddProfissao(new Models.CadPessoa.CProfissao(
-                    empresaNome: profissao.EmpresaNome,
-                    cargoNome: profissao.CargoNome,
-                    empresaCnpj: profissao.EmpresaCnpj));
-            });
-
-            //Criando validação
             if (!viewModel.Profissoes.Any())
-                //return BadRequest("Selecione pelo menos uma profissão!");
-                return ValidationProblem("Selecione pelo menos uma profissão!");
+                return ValidationProblem("Necessário uma profissão.");
 
-            if (!await _context.AnyAsync(viewModel.Nome, cancellationToken))
-                await _context.InsertAsync(cadPessoa, cancellationToken);
-            else 
-                return ValidationProblem("Usuário já cadastrado!");
-
-            return Ok(new
+            foreach (var profissao in viewModel.Profissoes)
             {
-                Mensagem = "Cadastro criado com sucesso!",
-                Data = cadPessoa,
-            });
-        }
+                cadPessoa.AddProfissao(new Models.CadPessoa.CProfissao(cargoNome: profissao.CargoNome,
+                    empresaCnpj: profissao.EmpresaCnpj,
+                    empresaNome: profissao.EmpresaNome));
 
-        [HttpPost, Route("pesquisa")]
-        public async Task<IActionResult> GetCadPessoaAsync(PesquisaPessoaViewModel viewModel, CancellationToken cancellationToken)
-        {
-            if (!string.IsNullOrEmpty(viewModel.Pesquisar))
-            {
-                var cadPessoas = await _context.GetPesquisaAsync(viewModel.Pesquisar, cancellationToken);
-
-                return Ok(new
-                {
-                    Mensagem = $"Resultado para a busca: {viewModel.Pesquisar}",
-                    Resultados = cadPessoas
-                });
             }
-            else
-            {
-                return ValidationProblem("Preencha o campo pesquisar.");
-            }
+            await _repository.InsertAsync(cadPessoa, cancellationToken);
+            return Ok("Pessoa cadastrada com sucesso!");
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCadPessoaAsync(CadPessoaViewModel viewModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAsync(CadPessoaViewModel viewModel, CancellationToken cancellationToken)
         {
-            var cadPessoa = await _context.GetAsync(viewModel.Nome, cancellationToken);
+            //if (!viewModel.Id.HasValue)
+            //    return ValidationProblem("Registro não foi encontrada.");
+
+            var cadPessoa = await _repository.GetAsync(viewModel.Id, cancellationToken);
 
             cadPessoa.AlterarAltura(viewModel.Altura);
             cadPessoa.AlterarPeso(viewModel.Peso);
             cadPessoa.AlterarIdade(viewModel.Idade);
 
-            viewModel.Profissoes.ForEach(profissao =>
+            if (!viewModel.Profissoes.Any())
+                return ValidationProblem("Necessário uma profissão.");
+
+            foreach (var profissao in viewModel.Profissoes)
             {
-                cadPessoa.AddProfissao(new Models.CadPessoa.CProfissao(
-                    empresaNome: profissao.EmpresaNome,
+                cadPessoa.AddProfissao(new Models.CadPessoa.CProfissao(cargoNome: profissao.CargoNome,
                     empresaCnpj: profissao.EmpresaCnpj,
-                    cargoNome: profissao.CargoNome));
-            });
+                    empresaNome: profissao.EmpresaNome));
+            }
 
-            await _context.UpdateAsync(cadPessoa, cancellationToken);
+            await _repository.UpdateAsync(cadPessoa, cancellationToken);
 
-            return Ok(new
-            {
-                Mensagem = "Registro atualizado com sucesso!",
-                Data = cadPessoa,
-            });
+            return Ok("Cadatró atualizado com sucesso.");
         }
 
-        [HttpDelete, Route("delete/{nome}")]
-        public async Task<IActionResult> DeleteCadPessoaAsync(string nome, CancellationToken cancellationToken)
+        [HttpDelete, Route("{id}")]
+        public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            await _context.DeleteAsync(nome, cancellationToken);
+            await _repository.DeleteAsync(id, cancellationToken);
 
-            return Ok(new
-            {
-                Mensagem = "Registro deletado com sucesso!",
-                Data = new
-                {
-                    nome
-                }
-            });
+            return Ok("Registro excluíd com sucesso!");
         }
-            //else
-            //    return BadRequest(new
-            //    {
-            //        Mensagem = "Nenhum registro encontrado!"
-            //    });
-                //return BadRequest("Nenhum registro encontrado");
-                //return Ok(new
-                //{
-                //    Mensagem = "Nenhum registro encontrado!"
-                //});
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace API.ViewModels
 {
-    public class PesquisaPessoaViewModel
+    public class RequestViewModel
     {
         public string Pesquisar { get; set; }
     }

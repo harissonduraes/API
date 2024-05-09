@@ -19,23 +19,7 @@
   },
   {
     "ContainingType": "API.Controllers.CadPessoa.HomeController",
-    "Method": "Create",
-    "RelativePath": "api/cad-pessoa",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "viewModel",
-        "Type": "API.ViewModels.CadPessoaViewModel",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.CadPessoa.HomeController",
-    "Method": "UpdateCadPessoaAsync",
+    "Method": "UpdateAsync",
     "RelativePath": "api/cad-pessoa",
     "HttpMethod": "PUT",
     "IsController": true,
@@ -51,15 +35,15 @@
   },
   {
     "ContainingType": "API.Controllers.CadPessoa.HomeController",
-    "Method": "DeleteCadPessoaAsync",
-    "RelativePath": "api/cad-pessoa/delete/{nome}",
+    "Method": "DeleteAsync",
+    "RelativePath": "api/cad-pessoa/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "nome",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
@@ -67,15 +51,31 @@
   },
   {
     "ContainingType": "API.Controllers.CadPessoa.HomeController",
-    "Method": "GetCadPessoaAsync",
-    "RelativePath": "api/cad-pessoa/pesquisa",
+    "Method": "InsertAsync",
+    "RelativePath": "api/cad-pessoa/create",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "viewModel",
-        "Type": "API.ViewModels.PesquisaPessoaViewModel",
+        "Type": "API.ViewModels.CadPessoaViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.CadPessoa.HomeController",
+    "Method": "SearchAsync",
+    "RelativePath": "api/cad-pessoa/search/{value}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "value",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],
